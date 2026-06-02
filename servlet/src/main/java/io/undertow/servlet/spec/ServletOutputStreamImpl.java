@@ -181,7 +181,7 @@ public class ServletOutputStreamImpl extends ServletOutputStream {
                 setFlags(FLAG_PENDING_DATA | FLAG_WRITE_STARTED);
                 this.pooledBuffer = null;
                 if (toWrite < len) {
-                    ByteBuf remainder = Unpooled.wrappedBuffer(b, off + toWrite, len - toWrite);
+                    ByteBuf remainder = Unpooled.copiedBuffer(b, off + toWrite, len - toWrite);
                     buffer = Unpooled.wrappedBuffer(buffer, remainder);
                 }
                 exchange.writeAsync(buffer, false, listenerCallback, null);
