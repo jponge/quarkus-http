@@ -18,6 +18,7 @@ import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.http.StreamPriority;
 import io.vertx.core.internal.ContextInternal;
 import io.vertx.core.internal.http.HttpServerRequestInternal;
+import io.vertx.core.internal.http.QueryParamDecoder;
 import io.vertx.core.net.HostAndPort;
 import io.vertx.core.net.NetSocket;
 import io.vertx.core.net.SocketAddress;
@@ -367,7 +368,7 @@ public class PushedHttpServerRequest extends HttpServerRequestInternal implement
     }
 
     @Override
-    public int streamId() {
+    public long streamId() {
         return original.streamId();
     }
 
@@ -411,5 +412,10 @@ public class PushedHttpServerRequest extends HttpServerRequestInternal implement
     @Override
     public MultiMap params(boolean semicolonIsNormalChar) {
         return original.params(semicolonIsNormalChar);
+    }
+
+    @Override
+    public QueryParamDecoder queryParamDecoder() {
+        return original.queryParamDecoder();
     }
 }

@@ -27,7 +27,6 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.http.HttpVersion;
-import io.vertx.core.http.impl.Http1xServerConnection;
 import io.vertx.core.internal.buffer.BufferInternal;
 import io.vertx.core.net.SocketAddress;
 import io.vertx.core.net.impl.ConnectionBase;
@@ -908,7 +907,7 @@ public class VertxHttpExchange extends HttpExchangeBase implements HttpExchange,
 
     @Override
     public void setUpgradeListener(Consumer<Object> listener) {
-        Http1xServerConnection connection = (Http1xServerConnection) request.connection();
+        ConnectionBase connection = (ConnectionBase) request.connection();
         ChannelHandlerContext context = connection.channelHandlerContext();
         upgradeHandler = new Handler<AsyncResult<Void>>() {
             @Override

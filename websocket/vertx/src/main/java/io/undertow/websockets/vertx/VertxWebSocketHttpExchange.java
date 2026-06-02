@@ -23,7 +23,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.http.impl.Http1xServerConnection;
+import io.vertx.core.net.impl.ConnectionBase;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.web.RoutingContext;
 
@@ -116,7 +116,7 @@ public class VertxWebSocketHttpExchange implements WebSocketHttpExchange {
     public void upgradeChannel(Consumer<Object> listener) {
         response.headers().set(HttpHeaderNames.CONNECTION, "upgrade");
 
-        Http1xServerConnection connection = (Http1xServerConnection) request.connection();
+        ConnectionBase connection = (ConnectionBase) request.connection();
         ChannelHandlerContext context = connection.channelHandlerContext();
         final ChannelHandler websocketChannelHandler = context.pipeline().get("webSocketExtensionHandler");
         if (websocketChannelHandler != null) {
@@ -127,7 +127,7 @@ public class VertxWebSocketHttpExchange implements WebSocketHttpExchange {
                 .onComplete(new Handler<AsyncResult<Void>>() {
                     @Override
                     public void handle(AsyncResult<Void> event) {
-                        Http1xServerConnection connection = (Http1xServerConnection) request.connection();
+                        ConnectionBase connection = (ConnectionBase) request.connection();
                         ChannelHandlerContext context = connection.channelHandlerContext();
                         context.pipeline().remove("httpDecoder");
                         context.pipeline().remove("httpEncoder");
