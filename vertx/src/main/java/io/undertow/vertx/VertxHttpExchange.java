@@ -648,6 +648,15 @@ public class VertxHttpExchange extends HttpExchangeBase implements HttpExchange,
 
     @Override
     public <T> void writeAsync0(ByteBuf data, boolean last, IoCallback<T> callback, T context) {
+        if (!getIoThread().inEventLoop()) {
+            getIoThread().execute(new Runnable() {
+                @Override
+                public void run() {
+                    VertxHttpExchange.this.writeAsync0(data, last, callback, context);
+                }
+            });
+            return;
+        }
         if (upgradeRequest && getStatusCode() != 101) {
             response.headers().add(HttpHeaderNames.CONNECTION, "close");
         }
