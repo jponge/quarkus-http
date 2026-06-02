@@ -84,7 +84,7 @@ public class AsyncInputStreamServlet extends HttpServlet {
         }
 
         @Override
-        public void onWritePossible() throws IOException {
+        public synchronized void onWritePossible() throws IOException {
             //we don't use async writes for the off IO thread case
             //as we can't make it thread safe
             if (offIoThread || outputStream.isReady()) {
@@ -113,7 +113,7 @@ public class AsyncInputStreamServlet extends HttpServlet {
             }
         }
 
-        private void doOnDataAvailable() {
+        private synchronized void doOnDataAvailable() {
             int read;
             try {
                 while (inputStream.isReady()) {
@@ -124,8 +124,6 @@ public class AsyncInputStreamServlet extends HttpServlet {
                     if (read != -1) {
                         this.read++;
                         dataToWrite.write(read);
-                    } else {
-                        onWritePossible();
                     }
                 }
             } catch (IOException e) {
