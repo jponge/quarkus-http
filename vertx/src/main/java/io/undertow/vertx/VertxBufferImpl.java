@@ -472,6 +472,11 @@ public class VertxBufferImpl implements Buffer, BufferInternal {
     return buffer;
   }
 
+  @Override
+  public ByteBuf unwrap() {
+    return buffer;
+  }
+
   private BufferInternal append(String str, Charset charset) {
     byte[] bytes = str.getBytes(charset);
     buffer.writeBytes(bytes);
