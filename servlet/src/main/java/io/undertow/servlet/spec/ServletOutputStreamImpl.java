@@ -210,6 +210,7 @@ public class ServletOutputStreamImpl extends ServletOutputStream {
                     exchange.writeBlocking(pooledBuffer, false);
                     pooledBuffer = null;
                 } else {
+                    setFlags(FLAG_PENDING_DATA);
                     exchange.writeAsync(pooledBuffer, false, listenerCallback, null);
                     pooledBuffer = null;
                 }
