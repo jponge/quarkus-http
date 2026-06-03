@@ -67,20 +67,20 @@ public class VertxHttpExchange extends HttpExchangeBase implements HttpExchange,
 
     private Buffer input1;
     private Deque<Buffer> inputOverflow;
-    private boolean waitingForRead = false;
+    private volatile boolean waitingForRead = false;
     private BiConsumer<InputChannel, Object> readHandler;
     private Object readHandlerContext;
 
-    private boolean eof = false;
-    private boolean eofRead = false;
-    private boolean responseDone = false;
+    private volatile boolean eof = false;
+    private volatile boolean eofRead = false;
+    private volatile boolean responseDone = false;
 
-    private boolean waitingForWrite;
-    private boolean drainHandlerRegistered;
+    private volatile boolean waitingForWrite;
+    private volatile boolean drainHandlerRegistered;
     private volatile boolean writeQueued = false;
-    private IOException readError;
+    private volatile IOException readError;
     private final Object context;
-    private boolean first = true;
+    private volatile boolean first = true;
     private Handler<AsyncResult<Void>> upgradeHandler;
     private final boolean upgradeRequest;
     private long readTimeout = UndertowOptions.DEFAULT_READ_TIMEOUT;
@@ -88,7 +88,7 @@ public class VertxHttpExchange extends HttpExchangeBase implements HttpExchange,
     private long requestContentLength = -1;
 
     private Handler<HttpServerRequest> pushHandler;
-    private int continueState;
+    private volatile int continueState;
     private UndertowOptionMap optionMap = UndertowOptionMap.EMPTY;
 
     public VertxHttpExchange(HttpServerRequest request, BufferAllocator allocator, Executor worker, Object context) {
@@ -110,6 +110,7 @@ public class VertxHttpExchange extends HttpExchangeBase implements HttpExchange,
             pipeline.remove(websocketChannelHandler);
         }
         if (isRequestEntityBodyAllowed() && !request.isEnded()) {
+            request.pause();
             request.handler(this);
             request.exceptionHandler(new Handler<Throwable>() {
                 @Override
@@ -759,6 +760,7 @@ public class VertxHttpExchange extends HttpExchangeBase implements HttpExchange,
         Object context = null;
         if (event.length() == 0) {
             release(event);
+            request.fetch(1);
             return;
         }
         synchronized (request.connection()) {

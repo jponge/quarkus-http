@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
@@ -48,7 +49,7 @@ public class VertxWebSocketHttpExchange implements WebSocketHttpExchange {
     private final HttpServerRequest request;
     private final HttpServerResponse response;
     private final RoutingContext exchange;
-    final Map<String, Object> attributes = new HashMap<>();
+    final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     public VertxWebSocketHttpExchange(Executor executor, final RoutingContext context) {
         this.executor = executor;
