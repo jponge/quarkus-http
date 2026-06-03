@@ -84,7 +84,7 @@ public class AsyncInputStreamServlet extends HttpServlet {
         }
 
         @Override
-        public synchronized void onWritePossible() throws IOException {
+        public void onWritePossible() throws IOException {
             //we don't use async writes for the off IO thread case
             //as we can't make it thread safe
             if (offIoThread || outputStream.isReady()) {
