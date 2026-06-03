@@ -124,8 +124,6 @@ public class AsyncInputStreamServlet extends HttpServlet {
                     if (read != -1) {
                         this.read++;
                         dataToWrite.write(read);
-                    } else {
-                        onWritePossible();
                     }
                 }
             } catch (IOException e) {
